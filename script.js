@@ -1,3 +1,12 @@
+let humanScore = 0;
+let computerScore = 0;
+
+const resetBtn = document.querySelector('#reset');
+
+//refresh page for new game
+resetBtn.addEventListener('click',() => location.reload());
+
+
 //computer choose randomly from rock, paper and scissors
 function getComputerChoice() {
     computerChoice = Math.floor(Math.random() * 3 + 1);
@@ -12,78 +21,59 @@ function getComputerChoice() {
     return computerChoice;
 }
 
-//A prompt appears for the user and give his input
-function getHumanChoice() {
-    humanChoice = prompt("Choose your weapon!! ,rock, paper or scissors!");
-
-    if (humanChoice === null) {
-        console.log("You didnt enter anything!");
-    }
-    else {
-        humanChoice = humanChoice.toLowerCase();
-        //it makes case insensitive
-    }
-
-    return humanChoice;
-}
-
-let humanScore = 0;
-let computerScore = 0;
-
 
 //Now the game process function, compare the both inputs and give result.
-function playRound(computerchoice, humanchoice) {
+function playRound(humanChoice,computerChoice) {
 
-    if (computerChoice === humanChoice) {
-        console.log("This is a draw!");
-    } else if (computerChoice === "paper" && humanChoice === "rock") {
-        console.log(`Computer Won! ${computerChoice} beats ${humanChoice}`);//it tells who wins and how.
-        computerScore++;//it adds 1 score to the winner
-        console.log(`Score Y:${humanScore} C:${computerScore}`)
-    } else if (computerChoice === "rock" && humanChoice === "paper") {
-        console.log(`You Won! ${humanChoice} beats ${computerChoice}!`);
+    if (humanChoice === computerChoice) {
+        return "It's a tie!";
+    } else if (
+        (humanChoice === "rock" && computerChoice === "scissors") ||
+        (humanChoice === "scissors" && computerChoice === "paper") ||
+        (humanChoice === "paper" && computerChoice === "rock")
+    ) {
         humanScore++;
-        console.log(`Score Y:${humanScore} C:${computerScore}`)
-    } else if (computerChoice === "paper" && humanChoice === "scissors") {
-        console.log(`You Won! ${humanChoice} beats ${computerChoice}!`);
-        humanScore++;
-        console.log(`Score Y:${humanScore} C:${computerScore}`)
-    } else if (computerChoice === "scissors" && humanChoice === "paper") {
-        console.log(`Computer Won! ${computerChoice} beats ${humanChoice}`);
+        return "You win! " + humanChoice + " beats " + computerChoice + "!";
+    } else {
         computerScore++;
-        console.log(`Score Y:${humanScore} C:${computerScore}`)
-    } else if (computerChoice === "rock" && humanChoice === "scissors") {
-        console.log(`Computer Won! ${computerChoice} beats ${humanChoice}`);
-        computerScore++;
-        console.log(`Score Y:${humanScore} C:${computerScore}`)
-    } else if (computerChoice === "scissors" && humanChoice === "rock") {
-        console.log(`You Won! ${humanChoice} beats ${computerChoice}!`);
-        humanScore++;
-        console.log(`Score Y:${humanScore} C:${computerScore}`)
-    }
-
-
-}
-
-// Actually Play the game
-// Score will be added to the score board
-function playGame() {
-    const humanSelection = getHumanChoice();
-    const computerSelection = getComputerChoice();
-
-    playRound(computerSelection, humanSelection);
-}
-
-
-// It will go for 5 rounds then declare a winner
-while (humanScore < 5 && computerScore < 5) {
-    playGame();//it declares the function with nested function in it.
-
-    if (humanScore === 5) {
-        console.log("YOU WIN!!!");
-        break;
-    } else if (computerScore === 5) {
-        console.log("YOU LOOSE")
-        break;
+        return "You lose! " + computerChoice + " beats " + humanChoice + "!";
     }
 }
+
+function updateResults(roundResult) {
+    document.getElementById("roundResult").textContent = roundResult;
+    document.getElementById("score").textContent = "Score: Human" + humanScore + "-" + computerScore + "Computer";
+    if (humanScore === 5 || computerScore === 5) {
+        document.getElementById("winner").textContent =
+            humanScore === 5
+                ? "Congratulations! You won the game!"
+                : "Sorry, you lost the game!";
+
+        
+    }
+}
+
+
+document.getElementById("rock").addEventListener("click", () => {
+    const humanChoice = "rock";
+    const computerChoice = getComputerChoice();
+    const roundResult = playRound(humanChoice, computerChoice);
+    updateResults(roundResult);
+});
+
+document.getElementById("paper").addEventListener("click", () => {
+    const humanChoice = "paper";
+    const computerChoice = getComputerChoice();
+    const roundResult = playRound(humanChoice, computerChoice);
+    updateResults(roundResult);
+});
+
+document.getElementById("scissors").addEventListener("click", () => {
+    const humanChoice = "scissors";
+    const computerChoice = getComputerChoice();
+    const roundResult = playRound(humanChoice, computerChoice);
+    updateResults(roundResult);
+});
+
+
+
